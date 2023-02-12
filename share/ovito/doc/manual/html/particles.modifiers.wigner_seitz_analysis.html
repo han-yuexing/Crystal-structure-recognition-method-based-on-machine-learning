@@ -1,0 +1,130 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Wigner-Seitz defect analysis</title><link rel="stylesheet" type="text/css" href="manual.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="OVITO User Manual"><link rel="up" href="particles.modifiers.html" title="Modifiers"><link rel="prev" href="particles.modifiers.vorotop_analysis.html" title="Voronoi topology analysis"><link rel="next" href="particles.modifiers.wrap_at_periodic_boundaries.html" title="Wrap at periodic boundaries"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><a href="http://www.ovito.org/"><img src="images/ovito_logo.png" border="0"></a><table width="100%" summary="Navigation header"><tr><td width="20%" align="left"><a accesskey="h" href="index.html">Table of Contents</a></td><th width="60%" align="center">Wigner-Seitz defect analysis</th><td width="20%" align="right"><a accesskey="u" href="particles.modifiers.html">Up</a></td></tr><tr><td width="20%" align="left"><a accesskey="p" href="particles.modifiers.vorotop_analysis.html">Prev</a> </td><th width="60%" align="center">Modifiers</th><td width="20%" align="right"> <a accesskey="n" href="particles.modifiers.wrap_at_periodic_boundaries.html">Next</a></td></tr></table></div><div class="section" id="particles.modifiers.wigner_seitz_analysis"><div class="titlepage"><div><div><h3 class="title">Wigner-Seitz defect analysis</h3></div></div></div>
+  
+
+  <p>
+  
+    </p><div class="informalfigure"><div class="screenshot"><div class="mediaobject"><img src="images/modifiers/wigner_seitz_analysis_panel.png"></div></div></div><p>
+  
+    This analysis modifier identifies point defects in crystalline structures using the so-called Wigner-Seitz cell method. It can be used to count vacancies and interstitials,
+    for example, or track their motion through the lattice. 
+  </p>  
+
+  <div class="simplesect" id="id486452"><div class="titlepage"><div><div><h4 class="title">How the Wigner-Seitz cell method works</h4></div></div></div>
+    
+  <p>
+    The Wigner-Seitz cell method works as follows: It is presumed that two configurations of
+    the atomistic system exist: the <span class="emphasis"><em>reference state</em></span>, which is defect-free (typically the perfect crystal lattice), 
+    and the <span class="emphasis"><em>displaced configuration</em></span>, which represents the defective state of the crystal to be analyzed.
+    In the latter, some atoms have been displaced or completely removed from their original sites.
+  </p>
+  <p>
+      </p><div class="screenshot"><div class="mediaobject"><img src="images/modifiers/wigner_seitz_method.png" width="513"></div></div><p>
+    Each atomic site in the reference configuration defines the center of a Wigner-Seitz cell (also called a <a class="ulink" href="https://en.wikipedia.org/wiki/Voronoi_diagram" target="_top">Voronoi cell</a>),
+    which is the spatial region belonging to that site. Any atom that is located within the Wigner-Seitz cell
+    of a reference site is said to occupy that site. In other words, the WS anlysis algorithm simply counts the number of
+    atoms (from the displaced configuration) that occupy each site (of the reference configuration). Typically, 
+    sites are occupied by exactly one atom each, because most of the crystal remains intact and atoms do not leave their original positions. 
+    However, some sites may be occupied by zero atoms (we call these sites <span class="emphasis"><em>vacancies</em></span>)
+    or by more than one atom (then we call the excess atoms <span class="emphasis"><em>interstitials</em></span>).
+  </p>
+  </div>
+
+  <div class="simplesect" id="id486492"><div class="titlepage"><div><div><h4 class="title">Generated output</h4></div></div></div>
+    
+  <p>
+    The modifier outputs the number of atoms sitting on each site as a particle property named <code class="literal">Occupancy</code>.
+    This integer property allows to subsequently filter out normal sites and show only defective sites (e.g. by using the <a class="link" href="particles.modifiers.expression_select.html" title="Expression select">Expression Select</a> modifier).
+    Furthermore, the modifier reports two global quantities:
+    </p><div class="variablelist"><dl class="variablelist"><dt><span class="term">Number of vacancies</span></dt><dd>
+          <p>This is the total number of sites in the reference configuration which are not occupied by any atom 
+          of the displaced configuration (sites with occupancy=0).</p>
+        </dd><dt><span class="term">Number of interstitials</span></dt><dd>
+          <p>This is the total number of excess atoms, summed over all sites of the reference configuration. 
+          A site with occupancy=2 has one excess atom. A site with occupancy=3 has two excess atoms, and so forth.</p>
+        </dd></dl></div><p>
+  </p>
+  </div>
+
+  <div class="simplesect" id="id486581"><div class="titlepage"><div><div><h4 class="title">Workflow</h4></div></div></div>
+    
+  <p>
+    Note that the numbers of atoms in the reference configuration and in the displaced configuration do not have to be the same. 
+    However, if the two configurations do contain exactly the same number of atoms, then the number of vacancies and the number of interstitials
+    reported by the modifier will be equal. That is because, in this case, the sum over all occupancy numbers is equal to the
+    number of sites in the reference configuration.
+  </p>
+  
+  <p>
+    The currently loaded dataset, which the modifier has been applied to, is considered as the <span class="emphasis"><em>displaced configuration</em></span> by the modifier.
+    The <span class="emphasis"><em>reference configuration</em></span> is loaded by the modifier from a separate input file.
+    Use the <span class="emphasis"><em>"Reference: External file"</em></span> panel to pick the
+    file containing the reference particle positions, which define the defect-free state of the crystal.    
+  </p>
+  
+  <p>
+    <span class="emphasis"><em>IMPORTANT NOTE</em></span>:
+    The figure above shows that the occupancy numbers computed by the modifier are values associated with the reference
+    sites, not with the atoms of the displaced configuration. As the modifier's output data
+    relates to the reference configuration, the modifier throws away the displaced configuration after performing the WS analysis and completely replaces 
+    it with the reference configuration loaded from the secondary file. Thus, as an effect of applying the Wigner-Seitz modifier you will 
+    now see the atoms as they were in the reference configuration (defect-free crystal) instead of the displaced configuration (defective crystal) which you applied the modifier to. 
+    Keep in mind that the modifier only computes the number of atoms that occupy each site. It does not tell you which atom from the defective 
+    configuration occupies what site.
+  </p>
+
+  <p>
+    After the WS modifier has performed its computation, each atomic site will be associated with a new integer property named <span class="emphasis"><em>Occupancy</em></span>.
+    You can subsequently use the <a class="link" href="particles.modifiers.expression_select.html" title="Expression select">Expression Select</a> modifier to select certain sites that
+    correspond to certain types of point defects. For example, the selection expression <code class="literal">"Occupancy==0"</code> would select all empty sites (vacancies)
+    while the expression <code class="literal">"Occupancy&gt;1"</code> would select all sites containing at least one interstitial atom. Typically, you want
+    to visualize just the defective sites and hide all other sites, which are occupied by exactly one atom. This can be achieved with the following modification pipeline setup:
+      </p><div class="screenshot"><div class="mediaobject"><img src="images/modifiers/wigner_seitz_pipeline_example.png" width="864"></div></div><p>
+  </p>
+  </div>
+  
+  <div class="simplesect" id="id486663"><div class="titlepage"><div><div><h4 class="title">Systems with more than one atomic species</h4></div></div></div>
+    
+  <p>
+    To identify antisites and other defects in multi-component systems, more specific information about the atom(s) that occupy a site is required. 
+    For this, the modifier provides the <span class="emphasis"><em>Output per-type occupancies</em></span> option. If actived, the modifer breaks down the
+    occupancy number of each site into type-specific counts. Thus, if your displaced configuration contains
+    atoms of different types, then this allows you to determine how many atoms of each type occupy each
+    site in the reference crystal. The per-type occupancy numbers are output as
+    vector components of the <code class="literal">Occupancy</code> particle property. For example, the
+    property component <code class="literal">Occupancy.1</code> contains the number of atoms of type 1 that occupy a site.
+  </p>
+
+  <p>
+    OVITO's particle selection tools, in particular the <a class="link" href="particles.modifiers.expression_select.html" title="Expression select">
+    Expression Select</a> modifier, can be used to select the sites that meet specific criteria, for example
+    A-sites that are occupied by a B-atom (antisite). Another way of selecting this type of defect sites
+    is using OVITO's scripting interface or OVITO's <a class="link" href="particles.modifiers.python_script.html" title="Python script modifier">Python Script modifier</a>. You can find a detailed example in the 
+    <a class="ulink" href="python/modules/ovito_modifiers.html#ovito.modifiers.WignerSeitzAnalysisModifier" target="_top">scripting documentation of the Wigner-Seitz modifier</a>.
+  </p>
+  </div>
+
+  <div class="simplesect" id="id486720"><div class="titlepage"><div><div><h4 class="title">Parameters</h4></div></div></div>
+    
+
+    <div class="variablelist"><dl class="variablelist"><dt><span class="term">Eliminate homogeneous cell deformation</span></dt><dd>
+          <p>This option lets the modifier first rescale the 
+          simulation cell of the displaced configuration including all particle positions to match the 
+          cell shape of the reference configuration before performing the Wigner-Seitz analysis. This effectively eliminates any
+          macroscopic, homogeneous deformation of the simulation cell, and the atomic displacements will reflect only the internal motion of particles.</p>
+        </dd><dt><span class="term">Output per-type occupancies</span></dt><dd>
+          <p>If this option is active, the modifier outputs per-type occupancy numbers as explained above.</p>
+        </dd></dl></div>
+  </div>
+  
+  <div class="simplesect" id="id486767"><div class="titlepage"><div><div><h4 class="title">Implementation detail</h4></div></div></div>
+    
+    <p>
+       The Wigner-Seitz cell of a site is by definition the locus of points in space that are closer to that 
+       site than to any of the other sites. Note, however, that the modifier never has to compute the shape of the 
+       Wigner-Seitz cells explicitly to perform the analysis. It rather determines 
+       the closest site from the reference configuration for each atom of the displaced configuration. 
+       The occupancy counter of that site is then incremented by one.
+    </p>
+  </div>
+  
+</div><p class="footer_copyright">© 2017  Alexander Stukowski</p><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="particles.modifiers.vorotop_analysis.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="particles.modifiers.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="particles.modifiers.wrap_at_periodic_boundaries.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Voronoi topology analysis </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right" valign="top"> Wrap at periodic boundaries</td></tr></table></div></body></html>

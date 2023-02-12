@@ -1,0 +1,25 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Create isosurface</title><link rel="stylesheet" type="text/css" href="manual.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="OVITO User Manual"><link rel="up" href="particles.modifiers.html" title="Modifiers"><link rel="prev" href="particles.modifiers.create_bonds.html" title="Create bonds"><link rel="next" href="particles.modifiers.delete_selected_particles.html" title="Delete selected particles"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><a href="http://www.ovito.org/"><img src="images/ovito_logo.png" border="0"></a><table width="100%" summary="Navigation header"><tr><td width="20%" align="left"><a accesskey="h" href="index.html">Table of Contents</a></td><th width="60%" align="center">Create isosurface</th><td width="20%" align="right"><a accesskey="u" href="particles.modifiers.html">Up</a></td></tr><tr><td width="20%" align="left"><a accesskey="p" href="particles.modifiers.create_bonds.html">Prev</a> </td><th width="60%" align="center">Modifiers</th><td width="20%" align="right"> <a accesskey="n" href="particles.modifiers.delete_selected_particles.html">Next</a></td></tr></table></div><div class="section" id="particles.modifiers.create_isosurface"><div class="titlepage"><div><div><h3 class="title">Create isosurface</h3></div></div></div>
+  
+
+  <p>
+  
+    </p><div class="informalfigure"><div class="screenshot"><div class="mediaobject"><img src="images/modifiers/create_isosurface_panel.png" width="270"></div></div></div><p>
+    
+    </p><div class="informalfigure">
+      <div class="informaltable">
+        <table class="informaltable" border="0"><colgroup><col></colgroup><tbody><tr valign="bottom"><td valign="bottom">Example: Two isosurfaces of charge density:</td></tr><tr valign="top"><td valign="top">
+		        <div class="mediaobject"><img src="images/modifiers/create_isosurface_example.png"></div>
+              </td></tr></tbody></table>
+      </div>
+    </div><p>
+
+    This modifier computes an <a class="ulink" href="https://en.wikipedia.org/wiki/Isosurface" target="_top">isosurface</a> for a field quantity defined on a structured data grid.
+    Note that the modifier is available only if a field quantity has been loaded. In the current program version,
+    the only file parser that provides such data is the POSCAR reader, which can load charge densities
+    computed by the VASP DFT code from <span class="emphasis"><em>CHGCAR</em></span> files.
+  </p>
+  <p>
+    Note: The modifier may be applied several times to create multiple surfaces at different iso-levels.
+  </p>
+     
+</div><p class="footer_copyright">© 2017  Alexander Stukowski</p><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="particles.modifiers.create_bonds.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="particles.modifiers.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="particles.modifiers.delete_selected_particles.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Create bonds </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right" valign="top"> Delete selected particles</td></tr></table></div></body></html>

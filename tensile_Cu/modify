@@ -1,0 +1,71 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Aug 20 16:20:33 2017
+
+@author: wq
+"""
+
+from ovito.data import *
+from sklearn.externals import joblib
+import numpy as np
+dis = 0.4
+width = 10
+hight = 10
+length = 10
+
+def to_color(y):
+    if y == 0:
+        return (0, 0.9, 0)
+    elif y == 1:
+        return (0.9, 0, 0)
+    elif y == 2:
+        return (0, 0, 1)
+    else:
+        return (1, 1, 1)
+
+def get_input_data(data):
+    pos = data.particle_properties.position.array
+    position = {}
+    count = 0
+    
+    x = pos.T[0].copy() + 10 # - min(pos.T[0])
+    y = pos.T[1].copy() + 10#- min(pos.T[1])
+    z = pos.T[2].copy() + 20#- min(pos.T[2])
+    
+    #print(z[z < 0])
+    x /= dis
+    y /= dis
+    z /= dis
+    
+    x = x.astype(int)
+    y = y.astype(int)
+    z = z.astype(int)
+    
+    position[count] = [x, y, z]
+    
+    max_x = max(x) + width
+    max_y = max(y) + hight
+    max_z = max(z) + length
+
+    buf_cube = np.ndarray(shape = (max_x, max_y, max_z))
+    
+    for i in range(len(x)):
+        buf_cube[x[i], y[i], z[i]] = 1
+    
+    feature = []
+    
+    feature = [np.array(buf_cube[(x[i] - width):(x[i] + width), (y[i] - hight):(y[i] + hight), (z[i] - length):(z[i] + length)]).reshape(2 * 2 * 2 * width * length * hight) for i in range(len(x))]
+
+    return feature
+    
+def modify(frame, input, output):
+    MLP = joblib.load("/home/wq/soft/ovito-2.9.0-x86_64/MLP.model")
+    data = get_input_data(input)
+    pred = MLP.predict_proba(data)
+    temp = [np.argmax(i) for i in pred]
+    for i in set(temp):
+        print(i, temp.count(i))
+    color_property = output.create_particle_property(ParticleProperty.Type.Color)
+    color_property.marray[:]=[(i[1], i[0], i[2]) for i in pred]
+    print("23The input contains %i particles." % input.number_of_particles)

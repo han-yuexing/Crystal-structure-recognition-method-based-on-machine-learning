@@ -1,0 +1,167 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Polyhedral template matching</title><link rel="stylesheet" type="text/css" href="manual.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="OVITO User Manual"><link rel="up" href="particles.modifiers.html" title="Modifiers"><link rel="prev" href="particles.modifiers.manual_selection.html" title="Manual selection"><link rel="next" href="particles.modifiers.python_script.html" title="Python script modifier"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><a href="http://www.ovito.org/"><img src="images/ovito_logo.png" border="0"></a><table width="100%" summary="Navigation header"><tr><td width="20%" align="left"><a accesskey="h" href="index.html">Table of Contents</a></td><th width="60%" align="center">Polyhedral template matching</th><td width="20%" align="right"><a accesskey="u" href="particles.modifiers.html">Up</a></td></tr><tr><td width="20%" align="left"><a accesskey="p" href="particles.modifiers.manual_selection.html">Prev</a> </td><th width="60%" align="center">Modifiers</th><td width="20%" align="right"> <a accesskey="n" href="particles.modifiers.python_script.html">Next</a></td></tr></table></div><div class="section" id="particles.modifiers.polyhedral_template_matching"><div class="titlepage"><div><div><h3 class="title">Polyhedral template matching</h3></div></div></div>
+  
+
+  <p>
+    
+    </p><div class="informalfigure"><div class="screenshot"><div class="mediaobject"><img src="images/modifiers/polyhedral_template_matching_panel.png"></div></div></div><p>
+
+  This modifier classifies the local structural environment of particles
+  using the <span class="emphasis"><em>Polyhedral Template Matching</em></span> (PTM) method [<a class="ulink" href="https://dx.doi.org/10.1088/0965-0393/24/5/055007" target="_top">P.M. Larsen et al., Modelling Simul. Mater. Sci. Eng. 24, 055007</a>]
+  (<a class="ulink" href="http://arxiv.org/abs/1603.05143" target="_top">preprint available</a>)
+  and allows identifying the local crystalline structure of simple condensed phases (FCC, BCC, etc.) formed by atoms.
+  </p>
+  
+  <p>
+  The PTM approach promises greater reliability than e.g. <a class="link" href="particles.modifiers.common_neighbor_analysis.html" title="Common neighbor analysis">Common Neighbor Analysis (CNA)</a> in the 
+  presence of strong thermal fluctuations and strain. Furthermore, it provides a direct calculation of the local (per-atom) orientation, elastic deformation, strain and alloy type.
+  </p>
+
+  <p>
+  The modifier assigns the <code class="literal">Structure Type</code> property to each particle with
+  the assigned structural type encoded as an integer value:
+  </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+      <p>0 = Other, unknown coordination structure</p>
+    </li><li class="listitem">
+      <p>1 = FCC, face-centered cubic</p>
+    </li><li class="listitem">
+      <p>2 = HCP, hexagonal close-packed</p>
+    </li><li class="listitem">
+      <p>3 = BCC, body-centered cubic</p>
+    </li><li class="listitem">
+      <p>4 = ICO, icosahedral coordination</p>
+    </li><li class="listitem">
+      <p>5 = SC, simple cubic</p>
+    </li></ul></div><p>
+  </p>
+    <p>
+      The structural types to be searched for can be changed by checking/unchecking the tick box for each type.
+    </p>
+
+  <div class="simplesect" id="id484861"><div class="titlepage"><div><div><h4 class="title">Root-Mean-Square Deviation (RMSD)</h4></div></div></div>
+    
+    <p>
+      For each input particle, the PTM tries to determine a mapping of the local neighborhood to each active candidate structure.
+      If such a mapping exists, a RMSD value is calculated, which is a measure of the spatial deviation from the ideal structure template (the quality of the match). 
+      The structural type with the lowest RMSD value is finally assigned to the particle.
+      A histogram of the RMSD values for all structures and all particles is shown in the side panel.
+    </p>
+    <p> 
+      The modifier allows to set a global RMSD cutoff, which limits the assignment of structural types to a range of RMSD values. Particles whose RMSD
+      exceeds the threshold are assigned the <span class="emphasis"><em>Other</em></span> structure type.
+      By adjusting the RMSD cutoff, the level of robustness can be adjusted.
+      A higher RMSD cutoff will lead to more identifications (and fewer 'defect' atoms), though possibly at the expense of false positives.
+      A lower RMSD cutoff will result in fewer structural identifications (and more 'defect' atoms and greater sensitivity to perturbations of the lattice), 
+      though possibly at the expense of false negatives. The role of the RMSD cutoff is discussed in section 5.1 of the PTM paper.
+    </p>  
+    <p>
+      A resonable value for the RMSD cutoff parameter is 0.1, which works well for identifying defects in crystalline solids.
+      Note that, for the sake of reproducibility, the chosen RMSD cutoff value should typically be reported in a publication if you use 
+      the PTM method to gain quantitative results (e.g. measure crystal defect fractions).
+    </p>
+  </div>
+
+  <div class="simplesect" id="id484896"><div class="titlepage"><div><div><h4 class="title">Interatomic distance</h4></div></div></div>
+    
+    <p>
+      The internal scale factor computed by the PTM method (see the paper) is the amount by which the atom coordinates are scaled in order to minimize the RMSD between the atom and template coordinates, 
+      after translation and rotation. It is proportional to the reciprocal local interatomic distance (including hydrostatic strain components).
+    </p>
+    <p>
+      The PTM modifier provides an option to output the local interatomic distance (or nearest neighbor distance) as a new particle property, which is computed from the internal scale factor for those atoms
+      that match one of the known structure types. 
+      Note that you can compute a local lattice constant (including hydrostatic strain) from the interatomic distance by dividing it by the 
+      factor <code class="literal">sqrt(1/2)</code> (for FCC,HCP) or <code class="literal">sqrt(3/4)</code> (for BCC) using, e.g., the <a class="link" href="particles.modifiers.compute_property.html" title="Compute property">Compute property</a> modifier
+    </p>
+  </div>
+
+  <div class="simplesect" id="id484931"><div class="titlepage"><div><div><h4 class="title">Local lattice orientation</h4></div></div></div>
+    
+    <p>
+     The PTM modifier can calculate the local lattice orientation for atoms that match one of the structural types. The computed orientation is stored
+     as a quaternion in the <code class="literal">Orientation</code> particle property. 
+     You can switch the <a class="link" href="display_objects.particles.html" title="Particle display">particle display shape</a> to <span class="emphasis"><em>Cube/Box</em></span> to visualize the computed 
+     per-particle orientations or apply <a class="ulink" href="python/introduction/examples.html#example-visualize-local-lattice-orientation" target="_top">this custom Python modifier</a> to color particles according to their local lattice orientation.
+     Lattice orientations are calculated such that they lie in the fundamental zone of the symmetry group for each structural type. 
+     This means that two atoms with very similar orientations can have large misorientations if they lie close to the boundaries of the fundamental zone.
+     For atoms that do not match any of the known structure types, no local lattice orientation can be computed. They are assigned the
+     invalid quaternion (0,0,0,0). 
+    </p>
+  </div>
+
+  <div class="simplesect" id="id484967"><div class="titlepage"><div><div><h4 class="title">Elastic deformation gradient</h4></div></div></div>
+    
+    <p>
+      The local elastic deformation gradient is calculated as the affine transformation of the ideal template which minimizes the sum of squared distances 
+      from the actual atomic coordinates. 
+    </p>
+  </div>
+
+  <div class="simplesect" id="id484980"><div class="titlepage"><div><div><h4 class="title">Alloy structures</h4></div></div></div>
+    
+    <p>
+      Atom types are generally ignored by the PTM when identifying the <span class="emphasis"><em>structural</em></span> type (e.g. FCC, BCC, etc.). However, the algorithm can additionally      
+      identify the local <span class="emphasis"><em>alloy</em></span> type by taking into account the chemical species of atoms (given by the <code class="literal">Particle Type</code> property, which must be defined).
+      The binary alloy types currently identified by the PTM algorithm are A2 and B2 for BCC, and A1, L1<sub>0</sub> and L1<sub>2</sub> for FCC.      
+    </p>
+    <p>
+      The local alloy type is output as an additional integer particle property named <code class="literal">Alloy Type</code>:
+    </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+      <p>0 = Other, unknown alloy type</p>
+    </li><li class="listitem">
+      <p>1 = Pure (all neighbors like central atom)</p>
+    </li><li class="listitem">
+      <p>2 = L1<sub>0</sub></p>
+    </li><li class="listitem">
+      <p>3 = L1<sub>2</sub> (Cu-type)</p>
+    </li><li class="listitem">
+      <p>4 = L1<sub>2</sub> (Au-type)</p>
+    </li><li class="listitem">
+      <p>5 = B2</p>
+    </li></ul></div><p>
+    The alloy type of a lattice atom is found by comparing the types of its neighbors to its own type. See the paper for details.
+    You can subsequently use the <a class="link" href="particles.modifiers.expression_select.html" title="Expression select">Expression select</a> modifier to select atoms of a
+    certain alloy type to give them a distinct color, for example.
+    </p>
+  </div>
+
+    <div class="simplesect" id="id485089"><div class="titlepage"><div><div><h4 class="title">Notes</h4></div></div></div>
+      
+  <p>
+    In addition to the PTM, OVITO provides alternative structure identification tools 
+    like the <a class="link" href="particles.modifiers.common_neighbor_analysis.html" title="Common neighbor analysis">Common Neighbor Analysis</a> modifier or the 
+    <a class="link" href="particles.modifiers.bond_angle_analysis.html" title="Bond-angle analysis">Bond-Angle Analysis</a> modifier. 
+    Furthermore, the <a class="link" href="particles.modifiers.identify_diamond_structure.html" title="Identify diamond structure">Identify Diamond Structure</a> analysis modifier can be 
+    used for identifying diamond lattice structures.
+  </p>
+
+  <p>
+    Note that this modifier requires access to the complete set of input particles to perform the analysis. It should therefore be placed at the 
+    beginning of the processing pipeline, preceding any modifiers that delete particles.
+  </p>
+  
+  <p>
+    The <span class="emphasis"><em>Use only selected particles</em></span> option restricts the analysis to the
+    currently selected particles. If this option is checked, unselected particles will be ignored 
+    (as if they did not exist) and will be assigned the structure type "Other".
+    This option can be useful if you want to identify defects in a crystal structure that is
+    not directly supported by the PTM algorithm, but which possesses a known sublattice.
+  </p>
+  </div>  
+
+  <div class="simplesect" id="id485135"><div class="titlepage"><div><div><h4 class="title">Technical notes</h4></div></div></div>
+    
+    <p>
+    A few changes have been made to the PTM method since publication of the article:
+    </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+      <p>The reference templates are now scaled such that the mean distance of the neighbors is 1.  
+      The central atom is no longer included in this calculation.</p>
+    </li><li class="listitem">
+      <p>The Voronoi cell calculation is now performed using the Voro++ library [<a class="ulink" href="http://math.lbl.gov/voro++/" target="_top">http://math.lbl.gov/voro++/</a>].</p>
+    </li><li class="listitem">
+      <p>The polar decomposition now uses a fast NR-QCP method instead of the SVD.</p>
+    </li></ul></div><p>
+  </p>
+  
+  </div>
+  
+</div><p class="footer_copyright">© 2017  Alexander Stukowski</p><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="particles.modifiers.manual_selection.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="particles.modifiers.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="particles.modifiers.python_script.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Manual selection </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right" valign="top"> Python script modifier</td></tr></table></div></body></html>

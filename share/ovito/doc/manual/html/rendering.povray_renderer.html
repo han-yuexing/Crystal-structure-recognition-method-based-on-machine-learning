@@ -1,0 +1,24 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>POV-Ray renderer</title><link rel="stylesheet" type="text/css" href="manual.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="OVITO User Manual"><link rel="up" href="rendering.html" title="Renderering"><link rel="prev" href="rendering.tachyon_renderer.html" title="Tachyon renderer"><link rel="next" href="development.html" title="Developer information"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><a href="http://www.ovito.org/"><img src="images/ovito_logo.png" border="0"></a><table width="100%" summary="Navigation header"><tr><td width="20%" align="left"><a accesskey="h" href="index.html">Table of Contents</a></td><th width="60%" align="center">POV-Ray renderer</th><td width="20%" align="right"><a accesskey="u" href="rendering.html">Up</a></td></tr><tr><td width="20%" align="left"><a accesskey="p" href="rendering.tachyon_renderer.html">Prev</a> </td><th width="60%" align="center">Renderering</th><td width="20%" align="right"> <a accesskey="n" href="development.html">Next</a></td></tr></table></div><div class="section" id="rendering.povray_renderer"><div class="titlepage"><div><div><h3 class="title">POV-Ray renderer</h3></div></div></div>
+  
+
+  <p>
+     </p><div class="informalfigure"><div class="screenshot"><div class="mediaobject"><img src="images/rendering/povray_renderer_panel.png"></div></div></div><p>  
+     
+     This rendering backend of OVITO invokes the external <a class="ulink" href="http://www.povray.org/" target="_top">POV-Ray (Persistence of Vision Raytracer)</a>
+     program to generate images of the scene. <a class="ulink" href="http://www.povray.org/" target="_top">POV-Ray</a> must be installed
+     on the computer if you want to use this rendering backend. It is available free of charge under an Open Source license on all platforms.
+   </p>
+   <p>
+     Every time an image of a viewport is being rendered, the rendering backend automatically saves the visible scene objects to a temporary file, which is then processed by 
+     the POV-Ray program. Once POV-Ray has finished, the rendered image is read back into OVITO. 
+   </p>
+   <p>
+     Note that you can also save the current scene to
+     a <code class="filename">.pov</code> file using OVITO's <a class="link" href="usage.export.html" title="Exporting data">file export function</a>. 
+     This allows you to render the exported scene through POV-Ray at a later time or on a different machine.
+   </p>
+   <p>
+     The omni­directional stereo projection option, which requires POV-Ray 3.7.1 or newer,
+     allows to create <a class="ulink" href="http://wiki.povray.org/content/HowTo:ODS" target="_top">stereoscopic 360-degree VR videos</a>.
+   </p>
+</div><p class="footer_copyright">© 2017  Alexander Stukowski</p><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="rendering.tachyon_renderer.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="rendering.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="development.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Tachyon renderer </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right" valign="top"> Developer information</td></tr></table></div></body></html>

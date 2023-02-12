@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Correlation function</title><link rel="stylesheet" type="text/css" href="manual.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="OVITO User Manual"><link rel="up" href="particles.modifiers.html" title="Modifiers"><link rel="prev" href="particles.modifiers.coordination_polyhedra.html" title="Coordination polyhedra"><link rel="next" href="particles.modifiers.create_bonds.html" title="Create bonds"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><a href="http://www.ovito.org/"><img src="images/ovito_logo.png" border="0"></a><table width="100%" summary="Navigation header"><tr><td width="20%" align="left"><a accesskey="h" href="index.html">Table of Contents</a></td><th width="60%" align="center">Correlation function</th><td width="20%" align="right"><a accesskey="u" href="particles.modifiers.html">Up</a></td></tr><tr><td width="20%" align="left"><a accesskey="p" href="particles.modifiers.coordination_polyhedra.html">Prev</a> </td><th width="60%" align="center">Modifiers</th><td width="20%" align="right"> <a accesskey="n" href="particles.modifiers.create_bonds.html">Next</a></td></tr></table></div><div class="section" id="particles.modifiers.correlation_function"><div class="titlepage"><div><div><h3 class="title">Correlation function</h3></div></div></div>
+  
+
+  <p>
+  
+    </p><div class="informalfigure"><div class="screenshot"><div class="mediaobject"><img src="images/modifiers/correlation_function_panel.png" width="270"></div></div></div><p>
+  
+  This modifier calculates the spatial correlation function between two particle properties.</p>
+
+  <p>OVITO uses the FFT to compute the convolution. It then computes a radial average in reciprocal and real space. This gives the correlation function up to half of the cell size. The modifier can additionally compute the short-ranged part of the correlation function from a direct summation over neighbors.</p>
+
+  <p>For example, when both particle properties are constant and unity, the modifier returns the pair correlation function. The reciprocal space representation is then the structure factor.</p>
+
+  <div class="simplesect" id="id480200"><div class="titlepage"><div><div><h4 class="title">Parameters</h4></div></div></div>
+    
+
+    <div class="variablelist"><dl class="variablelist"><dt><span class="term">First property</span></dt><dd>
+          <p>First particle property for which to compute the correlation, P<sub>1</sub>.</p>
+        </dd><dt><span class="term">Second property</span></dt><dd>
+          <p>Second particle property for which to compute the correlation, P<sub>2</sub>. If both particle properties are identical, the modifier computes the autocorrelation.</p>
+        </dd><dt><span class="term">FFT grid spacing</span></dt><dd>
+          <p>This property sets the approximate size of the FFT grid cell. The actual size is determined by the distance of the cell faces which must contain an integer number of grid cells.</p>
+        </dd><dt><span class="term">Apply window function to nonperiodic directions</span></dt><dd>
+          <p>This property controls whether nonperiodic direction have a Hann window applied to them. Applying a window function is necessary to remove spurios oscillations and power-law scaling of the (implicit) rectangular window of the nonperiodic domain.</p>
+        </dd><dt><span class="term">Direct summation</span></dt><dd>
+          <p>If enabled, the real-space correlation plot will show the result of a direct calculation of the correlation function, obtaining by summing over neighbors. This short-ranged part of the correlation function is displayed as a red line.</p>
+        </dd><dt><span class="term">Neighbor cutoff radius</span></dt><dd>
+          <p>This property determines the cutoff of the direct calculation of the real-space correlation function.</p>
+        </dd><dt><span class="term">Number of neighbor bins</span></dt><dd>
+          <p>This property sets the number of bins for the direct calculation of the real-space correlation function.</p>
+        </dd><dt><span class="term">Normalize correlation function</span></dt><dd>
+          <p>If set to "by covariance" for the real-space correlation, the correlation function is normalized to approach unity at small distances and zero at large distances, i.e. the plot shows <span class="mathphrase">(C(r)-&#12296;P<sub>1</sub>&#12297;&#12296;P<sub>2</sub>&#12297;)/(&#12296;P<sub>1</sub>P<sub>2</sub>&#12297;-&#12296;P<sub>1</sub>&#12297;&#12296;P<sub>2</sub>&#12297;)</span> rather than the unnormalized C(r).
+          If set to "by RDF" for the real-space correlation, the correlation function is divided by the radial distribution function.
+          If activated for the reciprocal-space correlation function, the plot shows C(q)/&#12296;P<sub>1</sub>P<sub>2</sub>&#12297; rather than the unnormalized C(q).
+          </p>
+        </dd></dl></div>
+  </div>
+
+  <div class="simplesect" id="id480404"><div class="titlepage"><div><div><h4 class="title">Acknowledgment</h4></div></div></div>
+    
+    <p>
+      This modifier has been contributed by Lars Pastewka.
+    </p>
+  </div>
+    
+</div><p class="footer_copyright">© 2017  Alexander Stukowski</p><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="particles.modifiers.coordination_polyhedra.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="particles.modifiers.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="particles.modifiers.create_bonds.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Coordination polyhedra </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right" valign="top"> Create bonds</td></tr></table></div></body></html>
